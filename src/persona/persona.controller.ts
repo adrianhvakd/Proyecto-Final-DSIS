@@ -9,7 +9,11 @@ export class PersonaController {
 
   @Get('')
   @Render('persona/index')
-  index(){}
+  index(){
+    return {title:'Hola Mundo'};
+  }
+  
+
   @Post()
   create(@Body() createPersonaDto: CreatePersonaDto) {
     return this.personaService.create(createPersonaDto);
