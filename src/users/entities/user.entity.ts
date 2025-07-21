@@ -21,7 +21,5 @@ export class User {
   @CreateDateColumn()
   createdAt: Date;
   
-  async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
-  }
+
 }

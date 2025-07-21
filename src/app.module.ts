@@ -7,6 +7,8 @@ import { Persona } from './persona/entities/persona.entity';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { ClienteModule } from './cliente/cliente.module';
+import { Cliente } from './cliente/entities/cliente.entity';
 
 
 @Module({
@@ -17,9 +19,9 @@ import { AuthModule } from './auth/auth.module';
     username: 'root',
     password: '',
     database: 'aea',
-    entities: [Persona,User],
+    entities: [Persona,User,Cliente],
     synchronize: true,
-  }),PersonaModule, UsersModule, AuthModule],
+  }),PersonaModule, UsersModule, AuthModule, ClienteModule],
   controllers: [AppController],
   providers: [AppService],
 })

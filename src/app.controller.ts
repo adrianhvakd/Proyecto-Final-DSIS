@@ -15,6 +15,10 @@ export class AppController {
       return {title:'Hola Mundo'};
   }
 
+  @Get('login')
+  @Render('login')
+  renderlogin(){}
+
   @UseGuards(AuthGuard('jwt'))
   @Get('dashboard')
   @Render('dashboard')

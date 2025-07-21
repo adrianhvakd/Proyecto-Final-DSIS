@@ -21,49 +21,17 @@
         </form>
       </li>
 
-      <li><a class="active" href="index.html"><i class="material-icons pink-item">dashboard</i>Dashboard</a></li>
-      <li><div class="divider"></div></li>
-
-      <li><a class="subheader">Management</a></li>
-      <li><a href="names.html"><i class="material-icons pink-item">thumbs_up_down</i>Name Approvals</a></li>
-      <li><a href="comments.html"><i class="material-icons pink-item">note_add</i>News Comments</a></li>
-
-      <li class="no-padding">
-        <ul class="collapsible collapsible-accordion">
-          <li>
-            <a class="collapsible-header">User Management<i class="material-icons pink-item">person</i></a>
-            <div class="collapsible-body">
-              <ul>
-                <li><a href="userdetails.html">User Detail</a></li>
-                <li><a href="recentusers.html">Recent Users</a></li>
-                <li><a href="reports.html">Reports</a></li>
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </li>
-
-      <li class="no-padding">
-        <ul class="collapsible collapsible-accordion">
-          <li>
-            <a class="collapsible-header">Announcements<i class="material-icons pink-item">arrow_drop_down</i></a>
-            <div class="collapsible-body">
-              <ul>
-                <li><a href="addannoun.html">Add New</a></li>
-                <li><a href="allannoun.html">All Announcements</a></li>
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </li>
+      {{>menu}}
     </ul>
     <main>
     <section class="content">
+      <div class="container">
         <h1>{{title}}</h1>
         <p>Bienvenido, {{user.username}}</p>
         <form action="/auth/logout" method="post">
-            <button type="submit">Cerrar sesión</button>
+            <button type="submit" class="btn w-100">Cerrar sesión</button>
         </form>
+      </div>
 
         </section>
         </main>

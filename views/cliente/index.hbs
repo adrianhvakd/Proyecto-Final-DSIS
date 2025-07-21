@@ -1,0 +1,17 @@
+{{>titulo}}
+<table>
+    <tr>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Codigo Catastral</th>
+        <th>Pago Impuestos</th>
+    </tr>
+    {{#each clientes.result}}
+    <tr>
+        <td>{{this.nombre}} </td>
+        <td>{{this.apellidos}}</td>
+        <td>{{this.codVivienda}}</td>
+        <td>{{this.pagoImpuesto}}</td>
+    </tr>
+    {{/each}}
+</table>
