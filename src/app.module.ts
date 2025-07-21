@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { PersonaModule } from './persona/persona.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Persona } from './persona/entities/persona.entity';
+import { UsersModule } from './users/users.module';
+import { User } from './users/entities/user.entity';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -14,9 +17,9 @@ import { Persona } from './persona/entities/persona.entity';
     username: 'root',
     password: '',
     database: 'aea',
-    entities: [Persona],
+    entities: [Persona,User],
     synchronize: true,
-  }),PersonaModule],
+  }),PersonaModule, UsersModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

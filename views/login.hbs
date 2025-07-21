@@ -1,0 +1,81 @@
+<div class="login-container">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="text-center">{{title}}</h3>
+        </div>
+        <div class="card-body">
+            <div id="message" class="alert" style="display: none;"></div>
+            <form id="loginForm" method="post" action="/auth/login">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Usuario:</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="/users/register">¿No tienes cuenta? Regístrate</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("loginForm");
+  const message = document.getElementById("message");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const username = form.username.value;
+    const password = form.password.value;
+
+    try {
+      const response = await fetch("/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Error al iniciar sesión");
+      }
+
+      // 🔐 Guardar el token
+      localStorage.setItem("token", data.access_token);
+
+      // ⚡ Solicitar /dashboard con el token
+      const token = localStorage.getItem('token');
+
+      const dashboardResponse = await fetch("/dashboard", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!dashboardResponse.ok) {
+        throw new Error("No autorizado. Verifica tu token.");
+      }
+
+      const html = await dashboardResponse.text();
+      document.open();
+      document.write(html);
+      document.close();
+
+    } catch (error) {
+      message.textContent = error.message;
+      message.className = "alert alert-danger";
+      message.style.display = "block";
+    }
+  });
+});
+</script>
+
