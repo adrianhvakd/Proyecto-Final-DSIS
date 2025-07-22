@@ -1,17 +1,51 @@
 {{>titulo}}
-<table>
-    <tr>
-        <th>Nombres</th>
-        <th>Apellidos</th>
-        <th>Codigo Catastral</th>
-        <th>Pago Impuestos</th>
-    </tr>
-    {{#each clientes.result}}
-    <tr>
-        <td>{{this.nombre}} </td>
-        <td>{{this.apellidos}}</td>
-        <td>{{this.codVivienda}}</td>
-        <td>{{this.pagoImpuesto}}</td>
-    </tr>
-    {{/each}}
-</table>
+<div class="container">
+    <table>
+        <tr>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Codigo Catastral</th>
+            <th>Pago Impuestos</th>
+        </tr>
+        {{#each clientes.result}}
+        <tr>
+            <td>{{this.nombre}} </td>
+            <td>{{this.apellidos}}</td>
+            <td>{{this.codVivienda}}</td>
+            <td>{{this.pagoImpuesto}}</td>
+        </tr>
+        {{/each}}
+    </table>
+
+    {{div}}
+    <ul class="pagination">
+        {{#if paginacion.anterior}}
+        <li style="color: silver;">
+            <i class="material-icons">chevron_left</i></a>
+        </li>
+        {{else}}
+        <li>
+            <a style="padding: 0;" href="?paginaActual={{paginacion.paginaAnterior}}&itemPaginas={{../paginacion.itemPaginas}} ">
+            <i class="material-icons">chevron_left</i></a>
+        </li>
+        {{/if}}
+        {{#each paginacion.paginas}}
+        {{#if this.activo}}
+        <li class="active">
+        {{else}}
+        <li >
+        {{/if}}
+        <a href="?paginaActual={{this.paginas}}&itemPaginas={{../paginacion.itemPaginas}} ">{{this.paginas}}</a></li>
+        {{/each}}
+        {{#if paginacion.siguiente}}
+        <li class="disabled" style="color: silver">
+            <i class="material-icons">chevron_right</i></a>
+        </li>
+        {{else}}
+        <li>
+            <a href="?paginaActual={{paginacion.paginaSiguiente}}&itemPaginas={{../paginacion.itemPaginas}} ">
+            <i class="material-icons">chevron_right</i></a>
+        </li>
+        {{/if}}
+    </ul>
+</div>

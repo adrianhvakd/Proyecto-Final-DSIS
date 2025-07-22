@@ -10,6 +10,7 @@ export class ClienteService {
     private clienteRepository: Repository<Cliente>) {
     }
   public async getAllPagination(limit,offset){
+    offset = (offset - 1) * limit;
     const [datos, cantidad] = await this.clienteRepository.findAndCount({
       take: limit,
       skip: offset,
