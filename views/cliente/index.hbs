@@ -1,51 +1,64 @@
+{{>sidebar}}
+
 {{>titulo}}
+<div class="container">
+    <form method="get" action="">
+    <input type="text" name="buscar" placeholder="Buscar..." value="{{buscar}}" required/>
+    <button type="submit" class="btn">Buscar</button>
+        {{#if buscar}}
+        <a href="/cliente">
+            <button type="button" class="btn">Limpiar</button>
+        </a>
+        {{/if}}
+    </form>
+</div>
+<br>
+<!-- 🔽 NUEVO FORMULARIO PARA CARGAR CLIENTES -->
+<div class="container">
+    <form method="POST" action="/cliente/cargar" enctype="multipart/form-data">
+        <div class="file-field input-field">
+            <div class="btn">
+                <span>Subir archivo</span>
+                <input type="file" name="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" required>
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text" placeholder="Selecciona un archivo CSV o Excel">
+            </div>
+        </div>
+        <button type="submit" class="btn">Cargar clientes</button>
+    </form>
+</div>
+<br>
+<div class="container">
+    <a href="/cliente/formcliente" class="btn">Agregar nuevo cliente</a>
+</div>
 <div class="container">
     <table>
         <tr>
             <th>Nombres</th>
             <th>Apellidos</th>
-            <th>Codigo Catastral</th>
+            <th>codigo Catastral</th>
             <th>Pago Impuestos</th>
+            <th>Acciones</th>
         </tr>
+        
         {{#each clientes.result}}
         <tr>
-            <td>{{this.nombre}} </td>
+            <td>{{this.nombre}}</td>
             <td>{{this.apellidos}}</td>
-            <td>{{this.codVivienda}}</td>
-            <td>{{this.pagoImpuesto}}</td>
+            <td>{{this.codVivienda}} </td>
+            <td>{{#if this.pagoImpuesto}}SI{{else}}NO{{/if}} </td>
+            <td>
+                <a href="/cliente/formedit/{{this.id}}" ><i class="material-icons">create</i></a>
+                <a href="/cliente/delete/{{this.id}}" onclick="return confirm('¿Estás seguro de borrar este cliente?')"><i class="material-icons">delete</i></a>
+            </td>
         </tr>
         {{/each}}
     </table>
-
-    {{div}}
-    <ul class="pagination">
-        {{#if paginacion.anterior}}
-        <li style="color: silver;">
-            <i class="material-icons">chevron_left</i></a>
-        </li>
-        {{else}}
-        <li>
-            <a style="padding: 0;" href="?paginaActual={{paginacion.paginaAnterior}}&itemPaginas={{../paginacion.itemPaginas}} ">
-            <i class="material-icons">chevron_left</i></a>
-        </li>
-        {{/if}}
-        {{#each paginacion.paginas}}
-        {{#if this.activo}}
-        <li class="active">
-        {{else}}
-        <li >
-        {{/if}}
-        <a href="?paginaActual={{this.paginas}}&itemPaginas={{../paginacion.itemPaginas}} ">{{this.paginas}}</a></li>
-        {{/each}}
-        {{#if paginacion.siguiente}}
-        <li class="disabled" style="color: silver">
-            <i class="material-icons">chevron_right</i></a>
-        </li>
-        {{else}}
-        <li>
-            <a href="?paginaActual={{paginacion.paginaSiguiente}}&itemPaginas={{../paginacion.itemPaginas}} ">
-            <i class="material-icons">chevron_right</i></a>
-        </li>
-        {{/if}}
-    </ul>
+    {{#if buscar}}
+    {{else}}
+    {{>paginar}}
+    {{/if}}
 </div>
+
+

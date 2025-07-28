@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PersonaModule } from './persona/persona.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Persona } from './persona/entities/persona.entity';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { ClienteModule } from './cliente/cliente.module';
 import { Cliente } from './cliente/entities/cliente.entity';
+import { PuestosModule } from './puestos/puestos.module';
+import { Puesto } from './puestos/entities/puesto.entity';
+import { CronogramaModule } from './cronograma/cronograma.module';
+import { Cronograma } from './cronograma/entities/cronograma.entity';
 
 
 @Module({
@@ -18,10 +20,10 @@ import { Cliente } from './cliente/entities/cliente.entity';
     port: 3306,
     username: 'root',
     password: '',
-    database: 'aea',
-    entities: [Persona,User,Cliente],
+    database: 'aea2',
+    entities: [User,Cliente,Puesto,Cronograma],
     synchronize: true,
-  }),PersonaModule, UsersModule, AuthModule, ClienteModule],
+  }), UsersModule, AuthModule, ClienteModule, PuestosModule, CronogramaModule,CronogramaModule],
   controllers: [AppController],
   providers: [AppService],
 })

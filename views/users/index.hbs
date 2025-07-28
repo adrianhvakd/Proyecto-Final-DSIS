@@ -1,0 +1,51 @@
+{{>sidebar}}
+
+{{>titulo}}
+
+<div class="container">
+    <form method="get" action="">
+    <input type="text" name="buscar" placeholder="Buscar..." value="{{buscar}}" required/>
+    <button type="submit" class="btn">Buscar</button>
+        {{#if buscar}}
+        <a href="/users">
+            <button type="button" class="btn">Limpiar</button>
+        </a>
+        {{/if}}
+    </form>
+</div>
+<br>
+<div class="container">
+    <a href="/users/formusers" class="btn">Agregar nuevo usuario</a>
+</div>
+<div class="container">
+    <table>
+        <tr>
+            <th>Usuario</th>
+            <th>Correo Electronico</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Rol</th>
+            <th>Esta activo?</th>
+            <th>Acciones</th>
+        </tr>
+        
+        {{#each users.result}}
+        <tr>
+            <td>{{this.username}} </td>
+            <td>{{this.email}}</td>
+            <td>{{this.names}}</td>
+            <td>{{this.lastNames}}</td>
+            <td>{{this.role}}</td>
+            <td>{{#if this.isActive}}SI{{else}}NO{{/if}}</td>
+            <td>
+                <a href="/users/formedit/{{this.id}}" ><i class="material-icons">create</i></a>
+                <a href="/users/delete/{{this.id}}" onclick="return confirm('¿Estás seguro de borrar este cliente?')"><i class="material-icons">delete</i></a>
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+
+    {{>paginar}}
+</div>
+
+

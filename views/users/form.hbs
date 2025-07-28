@@ -1,0 +1,76 @@
+{{>sidebar}}
+
+{{>titulo}}
+<div class="container">
+
+    <form id="userForm" action="/users/{{#if item.id}}edit/{{item.id}}{{/if}}" method="Post">
+        <label>Usuario</label>
+        <input type="text" name="username" value="{{item.username}}" required>
+        
+        <label>email</label>
+        <input type="text" name="email" value="{{item.email}}" required>
+
+        <label>Nombres</label>
+        <input type="text" name="names" value="{{item.names}}" required>
+
+        <label>Apellidos</label>
+        <input type="text" name="lastNames" value="{{item.lastNames}}" required>
+
+        {{#if item.id}}<label>Contraseña</label>{{/if}}
+        <input type="{{#if item.id}}text{{else}}hidden{{/if}}" name="password" value="{{item.password}}">        
+
+        <label for="estado">Activar/Desactivar</label>
+        <input type="hidden" id="estado" name="isActive" value="{{#if item.isActive}}true{{else}}false{{/if}}">
+
+        <!-- botón que no envía el formulario -->
+        <button type="button" onclick="toggleEstado()">{{#if item.isActive}}Activo{{else}}Inactivo{{/if}}</button>
+        <select name="role">
+            <option value="Super Administrador">Super Administrador</option>
+            <option value="Administrador">Administrador</option>
+            <option value="Moderador">Moderador</option>
+        </select>
+        <input type="submit" class="btn" value="Guardar"/>
+        <button type="reset" class="btn">Limpiar</button>
+    </form>
+</div>    
+    <br>
+    <div class="container" id="errors">
+        {{item.respuesta}}
+    </div>
+
+    <script>
+        document.getElementById('userForm').onsubmit = function(e) {
+            e.preventDefault();
+            document.getElementById('errors').style.display = 'none';
+            const data = Object.fromEntries(new FormData(this));
+            console.log(data);
+            fetch('/users/{{#if item.id}}edit/{{item.id}}{{/if}}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.fromEntries(new FormData(this)))
+            })
+            .then(r => r.ok ? window.location.href = '/users' : r.json().then(d => {
+                document.getElementById('errors').innerHTML = d.message.join('<br>');
+                document.getElementById('errors').style.display = 'block';
+            }))
+        };
+
+        function toggleEstado() {
+            const input = document.getElementById('estado');
+            const boton = event.target;
+
+            if (input.value.toString().toLowerCase() === 'true'){
+            input.value = 'false';
+            boton.textContent = 'Inactivo';
+            boton.style.backgroundColor = 'gray';
+            } else {
+            input.value = 'true';
+            boton.textContent = 'Activo';
+            boton.style.backgroundColor = 'green';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            M.FormSelect.init(elems);
+        });
+    </script>

@@ -1,0 +1,64 @@
+{{>sidebar}}
+
+{{>titulo}}
+<div class="container">
+
+    <form id="clienteForm" action="/cliente/{{#if item.id}}edit/{{item.id}}{{/if}}" method="Post">
+        
+        <label>Nombres</label>
+        <input type="text" name="nombre" value="{{item.nombre}}" required>
+
+        <label>Apellidos</label>
+        <input type="text" name="apellidos" value="{{item.apellidos}}" required>
+
+        <label>Codigo de vivienda</label>
+        <input type="text" name="codVivienda" value="{{item.codVivienda}}" required>
+   
+        <label for="estado">¿Impuestos pagados?</label>
+        <input type="hidden" id="estado" name="pagoImpuesto" value="{{#if item.pagoImpuesto}}true{{else}}false{{/if}}">
+        <br>
+        <!-- botón que no envía el formulario -->
+        <button type="button" onclick="toggleEstado()">{{#if item.pagoImpuesto}}SI{{else}}NO{{/if}}</button>
+        <br>
+        <br>
+        <button type="reset" class="btn">Limpiar</button>
+        <input type="submit" class="btn" value="Guardar"/>
+    </form>
+</div>    
+    <br>
+    <div class="container" id="errors">
+        {{item.respuesta}}
+    </div>
+
+    <script>
+        document.getElementById('clienteForm').onsubmit = function(e) {
+            e.preventDefault();
+            document.getElementById('errors').style.display = 'none';
+            const data = Object.fromEntries(new FormData(this));
+            console.log(data);
+            fetch('/cliente/{{#if item.id}}edit/{{item.id}}{{/if}}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.fromEntries(new FormData(this)))
+            })
+            .then(r => r.ok ? window.location.href = '/cliente' : r.json().then(d => {
+                document.getElementById('errors').innerHTML = d.message.join('<br>');
+                document.getElementById('errors').style.display = 'block';
+            }))
+        };
+
+        function toggleEstado() {
+            const input = document.getElementById('estado');
+            const boton = event.target;
+
+            if (input.value.toString().toLowerCase() === 'true'){
+            input.value = 'false';
+            boton.textContent = 'NO';
+            boton.style.backgroundColor = 'gray';
+            } else {
+            input.value = 'true';
+            boton.textContent = 'SI';
+            boton.style.backgroundColor = 'green';
+            }
+        }
+    </script>

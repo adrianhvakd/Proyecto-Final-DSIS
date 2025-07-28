@@ -1,0 +1,156 @@
+{{>sidebar}}
+{{>titulo}}
+
+<div class="container">
+    <form method="get" action="">
+        <input type="text" name="buscar" placeholder="Buscar evento, fase..." value="{{buscar}}" required />
+        <button type="submit" class="btn">Buscar</button>
+        {{#if buscar}}
+        <a href="/cronograma">
+            <button type="button" class="btn">Limpiar</button>
+        </a>
+        {{/if}}
+    </form>
+</div>
+
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <form method="post" action="/cronograma">
+            <input id="id" name="id" type="hidden">
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="nombre_evento" name="nombre_evento" type="text" required>
+                    <label for="nombre_evento">Nombre del Evento</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="fecha_inicio" name="fecha_inicio" type="date" required>
+                    <label class="active" for="fecha_inicio">Fecha Inicio</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="fecha_fin" name="fecha_fin" type="date" required>
+                    <label class="active" for="fecha_fin">Fecha Fin</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s6">
+                    <select id="fase" name="fase">
+                        <option value="anticipada">Venta anticipada</option>
+                        <option value="descanso">Día de descanso</option>
+                        <option value="publica">Venta pública</option>
+                    </select>
+                    <label for="fase">Fase</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <textarea id="descripcion" name="descripcion" class="materialize-textarea"></textarea>
+                    <label for="descripcion">Descripción</label>
+                </div>
+            </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="modal-close btn">Cancelar</button>
+        <button type="submit" class="btn">Enviar</button>
+    </div>
+        </form>
+</div>
+
+<div class="container">
+    <a class="btn modal-trigger" href="#modal1" onclick="limpiarFormulario()">Crear Cronograma</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Evento</th>
+                <th>Fase</th>
+                <th>Inicio</th>
+                <th>Fin</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each cronogramas.result}}
+            <tr>
+                <td>{{this.nombre_evento}}</td>
+                <td>{{this.fase}}</td>
+                <td>{{this.fecha_inicio}}</td>
+                <td>{{this.fecha_fin}}</td>
+                <td>{{this.descripcion}}</td>
+                <td>
+                    <a class="btn editar-btn" href="#modal1"
+                       data-id="{{this.id}}"
+                       data-nombre_evento="{{this.nombre_evento}}"
+                       data-fase="{{this.fase}}"
+                       data-fecha_inicio="{{this.fecha_inicio}}"
+                       data-fecha_fin="{{this.fecha_fin}}"
+                       data-descripcion="{{this.descripcion}}">
+                        <i class="material-icons">create</i>
+                    </a>
+                    <a class="btn" href="/cronograma/eliminar/{{this.id}}" onclick="return confirm('Seguro que deseas eliminar este cronograma?')">
+                        <i class="material-icons">delete</i>
+                    </a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{#if buscar}}
+    {{else}}
+    {{>paginar}}
+    {{/if}}
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        M.Modal.init(elems);
+
+        var elemsSelect = document.querySelectorAll('select');
+        M.FormSelect.init(elemsSelect);
+
+        document.querySelector('#modal1 form').addEventListener('submit', function(e) {
+            const idValue = document.getElementById('id').value;
+            if (idValue && !isNaN(parseInt(idValue))) {
+                this.action = `/cronograma/editar/${idValue}`;
+            } else {
+                this.action = '/cronograma';
+                document.getElementById('id').value = '';
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.editar-btn');
+            if (btn) {
+                document.getElementById('id').value = btn.dataset.id;
+                document.getElementById('nombre_evento').value = btn.dataset.nombre_evento;
+                document.getElementById('fase').value = btn.dataset.fase;
+                document.getElementById('fecha_inicio').value = btn.dataset.fecha_inicio;
+                document.getElementById('fecha_fin').value = btn.dataset.fecha_fin;
+                document.getElementById('descripcion').value = btn.dataset.descripcion;
+
+                M.updateTextFields();
+                M.FormSelect.init(document.querySelectorAll('select'));
+
+                const modal = M.Modal.getInstance(document.getElementById('modal1'));
+                modal.open();
+            }
+        });
+    });
+
+    function limpiarFormulario() {
+        document.getElementById('id').value = '';
+        document.getElementById('nombre_evento').value = '';
+        document.getElementById('fase').value = 'anticipada';
+        document.getElementById('fecha_inicio').value = '';
+        document.getElementById('fecha_fin').value = '';
+        document.getElementById('descripcion').value = '';
+
+        M.updateTextFields();
+        M.FormSelect.init(document.querySelectorAll('select'));
+    }
+</script>

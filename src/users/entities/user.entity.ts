@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Entity('users')
@@ -6,20 +6,34 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   username: string;
 
-  @Column({ unique: true })
+  @Column()
   email: string;
+
+  @Column()
+  names: string;
+
+  @Column()
+  lastNames: string;
 
   @Column()
   password: string;
 
-  @Column({ default: true })
+  @Column({ default: true})
   isActive: boolean;
+
+  @Column()
+  role: string;
 
   @CreateDateColumn()
   createdAt: Date;
   
+  @DeleteDateColumn()
+  deletedAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
 }

@@ -25,7 +25,7 @@ export class AuthController {
       return response.redirect('/dashboard');
     }
 
-    @Post('logout')
+    @Get('logout')
     async logout(@Res({ passthrough: true }) response: Response) {
         response.clearCookie('access_token', {
             httpOnly: true,

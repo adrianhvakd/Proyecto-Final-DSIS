@@ -1,13 +1,12 @@
 import { Controller, Get, Render, Request, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
-import { title } from 'process';
-import { use } from 'passport';
+import { UsersService } from './users/users.service';
+
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService, private userService: UsersService) {}
 
   @Get('')
   @Render('index')
@@ -22,10 +21,13 @@ export class AppController {
   @UseGuards(AuthGuard('jwt'))
   @Get('dashboard')
   @Render('dashboard')
-  getCurrentUser(@Request() req) {
+  async getCurrentUser(@Request() req) {
+    let user = await this.userService.findById(req.user.userId);
     return {
       title: 'Panel Principal',
-      user: req.user,
+      user: user,
       };
   }
+
+  
 }

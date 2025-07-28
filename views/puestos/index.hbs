@@ -1,0 +1,267 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+{{>sidebar}}
+{{>titulo}}
+
+<div class="container">
+    <form method="get" action="">
+    <input type="text" name="buscar" placeholder="Buscar..." value="{{buscar}}" required/>
+    <button type="submit" class="btn">Buscar</button>
+        {{#if buscar}}
+        <a href="/puestos">
+            <button type="button" class="btn">Limpiar</button>
+        </a>
+        {{/if}}
+    </form>
+</div>
+
+
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <form method="post" action="/puestos/puestosform">
+            <input id="id" name="id" type="hidden">
+            <div class="row">
+                <div class="input-field col s6">
+                <input id="lat" name="lat" type="hidden">
+                </div>
+                <div class="input-field col s6">
+                <input id="long" name="long" type="hidden">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s12">
+                <input id="ubicacion" name="ubicacion" type="text" maxlength="100" required>
+                <label for="ubicacion">Ubicación</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s6">
+                <input id="precio" name="precio" type="number" step="0.0000000001" required>
+                <label for="precio">Precio</label>
+                </div>
+
+                <div class="input-field col s6">
+                <input id="numero" name="numero" type="number" required>
+                <label for="numero">Número</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s6">
+                <select id="disponible" name="disponible">
+                    <option value="true" selected>Disponible</option>
+                    <option value="false">No disponible</option>
+                </select>
+                <label for="disponible">Estado</label>
+                </div>
+
+            </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="modal-close btn">Cancelar</button>
+        <button type="submit" class="btn">Enviar</button>
+    </div>
+        </form>
+</div>
+<div id="map" class="container" style="height: 400px; width: 70%;"></div>
+
+<div class="container">
+    <table>
+        <tr>
+            <th>Numero</th>
+            <th>Ubicacion</th>
+            <th>Precio</th>
+            <th>Disponible</th>
+            <th>Comprador</th>
+            <th>Factura</th>
+            <th>Codigo de vivienda</th>
+            <th>Acciones</th>
+        </tr>
+        
+        {{#each puestospag.result}}
+        <tr>
+            <td>{{this.numero}}</td>
+            <td>{{this.ubicacion}}</td>
+            <td>{{this.precio}}</td>
+            <td>{{#if this.disponible}}Si{{else}}No{{/if}}</td>
+            <td>{{#if this.comprador}}{{this.comprador}}{{else}}No comprado todavia{{/if}}</td>
+            <td>{{#if this.factura}}{{this.factura}}{{else}}Sin factura asignada{{/if}}</td>
+            <td>{{#if this.codVivienda}}{{this.codVivienda}}{{else}}Sin codigo de vivienda{{/if}}</td>
+            <td>
+                <div class="row">
+                    <div class="col s6">
+                        <a
+                            style="color: white" class="btn editar-btn" 
+                            data-id="{{this.id}}"
+                            data-lat="{{this.lat}}"
+                            data-long="{{this.long}}"
+                            data-ubicacion="{{this.ubicacion}}"
+                            data-precio="{{this.precio}}"
+                            data-numero="{{this.numero}}"
+                            data-disponible="{{this.disponible}}"
+                            href="#modal1">
+                            <i class="material-icons">create</i>
+                        </a>
+                    </div>
+                    <div class="col s6">
+                        <a style="color: white" href="/puestos/delete/{{this.id}}"  onclick="return confirm('¿Estás seguro de borrar este cliente?')" class="btn"><i class="material-icons">delete</i></a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+    {{#if buscar}}
+    {{else}}
+    {{>paginar}}
+    {{/if}}
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+    var map = L.map('map').setView([-19.579006, -65.757464], 15);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 20,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    let puestos=[];
+    let aux;
+    
+    {{#each puestos}}
+        console.log({{puestos.lat}});
+        aux = (L.circle([{{this.lat}}, {{this.long}}], {
+        color: {{#if this.disponible}}'green'{{else}}'red'{{/if}},
+        fillOpacity: 0.5,
+        radius: 5
+        }).addTo(map));
+        aux.bindPopup(`<strong class="tituloMap">Numero: {{this.numero}}</strong>
+        <br>
+        Direccion: {{this.ubicacion}}
+        <br>
+        <strong clas="tituloMap">Bs. {{this.precio}} </strong> <br>
+        <a 
+            style="color: white" class="btn editar-btn" 
+            data-id="{{this.id}}"
+            data-lat="{{this.lat}}"
+            data-long="{{this.long}}"
+            data-ubicacion="{{this.ubicacion}}"
+            data-precio="{{this.precio}}"
+            data-numero="{{this.numero}}"
+            data-disponible="{{this.disponible}}"
+            href="#modal1">Editar
+        </a>
+        <a style="color: white" href="/puestos/delete/{{this.id}}" class="btn">Eliminar</a>
+
+        `);
+        puestos.push(aux);
+    {{/each}}
+    
+    function onMapClick(e) {
+        const popupContent = `
+            <p>Agregar Puesto</p>
+            <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Agregar punto</a>
+        `;
+
+        L.popup()
+            .setLatLng(e.latlng)
+            .setContent(popupContent)
+            .openOn(map);
+
+        // Preparar formulario para CREAR (sin cambiar action aquí)
+        document.getElementById('lat').value = e.latlng.lat;
+        document.getElementById('long').value = e.latlng.lng;
+        document.getElementById('id').value = ''; // ID vacío = crear
+        document.getElementById('ubicacion').value = '';
+        document.getElementById('precio').value = '';
+        document.getElementById('numero').value = '';
+        document.getElementById('disponible').value = 'true';
+
+        M.updateTextFields();
+        M.FormSelect.init(document.querySelectorAll('select'));
+    }
+
+    map.on('click',onMapClick);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        M.Modal.init(elems);
+        
+        var elemsSelect = document.querySelectorAll('select');
+        M.FormSelect.init(elemsSelect);
+
+        // 🔥 SOLUCIÓN 1: Interceptar el envío del formulario y validar por ID
+        document.querySelector('#modal1 form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevenir envío normal
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            const idValue = document.getElementById('id').value;
+            
+            console.log('📋 Datos del formulario:', data);
+            console.log('🔍 ID encontrado:', idValue);
+            console.log('🔍 Tipo de ID:', typeof idValue);
+            
+            if (idValue && idValue.trim() !== '' && idValue !== 'NaN' && !isNaN(parseInt(idValue))) {
+                // EDITAR - cambiar la acción del formulario
+                console.log('🔄 Modo EDITAR - ID:', idValue);
+                this.action = `/puestos/editar/${idValue}`;
+            } else {
+                // CREAR - usar la acción original y limpiar ID completamente
+                console.log('🟢 Modo CREAR - Limpiando ID');
+                this.action = '/puestos/puestosform';
+                
+                // 🚨 CRÍTICO: Remover el campo ID del formulario para crear
+                const idField = document.getElementById('id');
+                idField.value = '';
+                idField.removeAttribute('name'); // Temporalmente quitar el name para que no se envíe
+                
+                // Restaurar el name después del envío
+                setTimeout(() => {
+                    idField.setAttribute('name', 'id');
+                }, 100);
+            }
+            
+            console.log('🎯 Enviando a:', this.action);
+            
+            // Ahora sí enviar el formulario
+            this.submit();
+        });
+
+        // Manejar clic en botón "Editar"
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.editar-btn');
+            if (btn) {
+                e.preventDefault();
+
+                console.log('✏️ Editando puesto ID:', btn.dataset.id);
+
+                // Llenar formulario
+                document.getElementById('lat').value = btn.dataset.lat;
+                document.getElementById('long').value = btn.dataset.long;
+                document.getElementById('ubicacion').value = btn.dataset.ubicacion;
+                document.getElementById('precio').value = btn.dataset.precio;
+                document.getElementById('numero').value = btn.dataset.numero;
+                document.getElementById('disponible').value = btn.dataset.disponible;
+                document.getElementById('id').value = btn.dataset.id;
+
+                M.updateTextFields();
+                M.FormSelect.init(document.querySelectorAll('select'));
+
+                const modal = M.Modal.getInstance(document.getElementById('modal1'));
+                modal.open();
+            }
+        });
+    });
+</script>

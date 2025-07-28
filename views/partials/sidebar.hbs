@@ -1,0 +1,237 @@
+<!-- Navbar superior para móviles -->
+<nav class="blue darken-2 hide-on-large-only">
+  <div class="nav-wrapper">
+    <a href="#!" data-target="slide-out" class="sidenav-trigger">
+      <i class="material-icons">menu</i>
+    </a>
+    <a href="#!" class="brand-logo center">{{title}}</a>
+  </div>
+</nav>
+
+
+<!-- Sidebar -->
+<ul id="slide-out" class="sidenav sidenav-fixed">
+  <li>
+    <div class="user-view">
+      <div class="background blue darken-2"></div>
+      <a href="#user">
+        <img class="circle" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiM5RTlFOUUiLz4KPGNpcmNsZSBjeD0iMzIiIGN5PSIyNCIgcj0iMTAiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xNiA1NkMxNiA0OC4yNjggMjMuMjY4IDQyIDMyIDQyQzQwLjczMiA0MiA0OCA0OC4yNjggNDggNTZIMTZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K">
+      </a>
+      <a href="#name">
+        <span class="white-text name">{{#if user}}{{user.username}}{{else}}Juan Pérez{{/if}}</span>
+      </a>
+      <a href="#email">
+        <span class="white-text email">{{#if user}}{{user.email}}{{else}}admin@empresa.com{{/if}}</span>
+      </a>
+    </div>
+  </li>
+  
+  <li>
+    <a href="/dashboard" class="waves-effect">
+      <i class="material-icons">dashboard</i>Dashboard
+    </a>
+  </li>
+  <li><div class="divider"></div></li>
+  
+  <li><a class="subheader">Gestión</a></li>
+  <li>
+    <a href="/users" class="waves-effect">
+      <i class="material-icons">account_box</i>Gestionar usuarios
+    </a>
+  </li>
+  <!--
+  <li>
+    <a href="/sales" class="waves-effect">
+      <i class="material-icons">shopping_cart</i>Gestionar ventas
+    </a>
+  </li>
+  -->
+  <li>
+    <a href="/puestos" class="waves-effect">
+      <i class="material-icons">inventory</i>Gestionar puestos
+    </a>
+  </li>
+  <!--
+  <li>
+    <a href="/suppliers" class="waves-effect">
+      <i class="material-icons">burst_mode</i>Gestionar galeria
+    </a>
+  </li>
+  -->
+  <li>
+    <a href="/cliente" class="waves-effect">
+      <i class="material-icons">people</i>Gestionar Clientes
+    </a>
+  </li>
+
+  <li>
+    <a href="/cronograma" class="waves-effect">
+      <i class="material-icons">date_range</i>Gestionar Cronograma
+    </a>
+  </li>
+
+    <li><div class="divider"></div></li>
+  
+  <li><a class="subheader">Sistema</a></li>
+  <li>
+    <a href="/settings" class="waves-effect">
+      <i class="material-icons">settings</i>Configuración
+    </a>
+  </li>
+  <li>
+    <a href="/help" class="waves-effect">
+      <i class="material-icons">help</i>Ayuda
+    </a>
+  </li>
+  <li>
+    <a href="/auth/logout" class="waves-effect red-text">
+      <i class="material-icons">logout</i>Cerrar Sesión
+    </a>
+  </li>
+</ul>
+
+<!-- Overlay para cerrar sidebar en móvil al hacer click fuera -->
+<div class="sidenav-overlay" style="display: none; opacity: 0;"></div>
+
+<style>
+  /* Estilos para el menú activo */
+  .sidenav li > a.active {
+    background-color: rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+  }
+  
+  /* IMPORTANTE: Ajustar el contenido principal para el sidebar fijo */
+  body {
+    padding-left: 300px;
+  }
+  
+  /* Ajustes responsive */
+  @media only screen and (max-width: 992px) {
+    body {
+      padding-left: 0;
+    }
+    
+    .sidenav-fixed {
+      transform: translateX(-105%);
+    }
+    
+    .sidenav.sidenav-fixed.open {
+      transform: translateX(0%);
+    }
+  }
+  
+  /* Mejorar la visualización del usuario en el sidebar */
+  .user-view .name {
+    font-weight: 500;
+    font-size: 16px;
+  }
+  
+  .user-view .email {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+  
+  /* Efecto hover mejorado */
+  .sidenav li > a:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Indicador visual para subheaders */
+  .sidenav .subheader {
+    color: #757575;
+    font-weight: 500;
+    font-size: 14px;
+    padding-top: 16px;
+  }
+  
+  /* Asegurar que el contenido principal tenga el padding correcto */
+  .main-content, main, .container-fluid {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+  }
+  
+  /* En móvil, agregar padding-top para el navbar */
+  @media only screen and (max-width: 992px) {
+    
+    .main-content, main {
+      padding-top: 0;
+    }
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Inicializar sidebar
+  var sidenavElems = document.querySelectorAll('.sidenav');
+  var sidenavInstances = M.Sidenav.init(sidenavElems, {
+    edge: 'left',
+    draggable: true,
+    inDuration: 300,
+    outDuration: 200,
+    onOpenStart: function() {
+      // Callback cuando empieza a abrirse
+    },
+    onCloseStart: function() {
+      // Callback cuando empieza a cerrarse
+    }
+  });
+  
+  
+  // Manejar el cierre automático del sidebar en móvil al hacer click en un enlace
+  var sidenavLinks = document.querySelectorAll('.sidenav a[href]:not([href="#!"])');
+  sidenavLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+      // Solo cerrar en pantallas pequeñas
+      if (window.innerWidth <= 992) {
+        var sidenavInstance = M.Sidenav.getInstance(document.getElementById('slide-out'));
+        if (sidenavInstance) {
+          sidenavInstance.close();
+        }
+      }
+    });
+  });
+  
+  // Manejar redimensionado de ventana
+  window.addEventListener('resize', function() {
+    var sidenavInstance = M.Sidenav.getInstance(document.getElementById('slide-out'));
+    if (sidenavInstance) {
+      if (window.innerWidth > 992) {
+        // En pantallas grandes, cerrar cualquier instancia abierta manualmente
+        sidenavInstance.close();
+      }
+    }
+  });
+  
+  // Destacar elemento activo del menú basado en la URL actual
+  function setActiveMenuItem() {
+    var currentPath = window.location.pathname;
+    var menuItems = document.querySelectorAll('.sidenav a[href]');
+    
+    menuItems.forEach(function(item) {
+      item.classList.remove('active');
+      if (item.getAttribute('href') === currentPath) {
+        item.classList.add('active');
+      }
+    });
+  }
+  
+  // Ejecutar al cargar la página
+  setActiveMenuItem();
+});
+
+// Función global para cerrar el sidebar (útil para llamar desde otros scripts)
+function closeSidebar() {
+  var sidenavInstance = M.Sidenav.getInstance(document.getElementById('slide-out'));
+  if (sidenavInstance) {
+    sidenavInstance.close();
+  }
+}
+
+// Función global para abrir el sidebar
+function openSidebar() {
+  var sidenavInstance = M.Sidenav.getInstance(document.getElementById('slide-out'));
+  if (sidenavInstance) {
+    sidenavInstance.open();
+  }
+}
+</script>
