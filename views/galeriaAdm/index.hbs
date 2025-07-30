@@ -1,0 +1,190 @@
+{{>sidebar}}
+{{>titulo}}
+
+<div class="container">
+    <form method="get" action="">
+        <input type="text" name="buscar" placeholder="Buscar evento, fase..." value="{{buscar}}" required />
+        <button type="submit" class="btn">Buscar</button>
+        {{#if buscar}}
+        <a href="/galeria/galeriaAdm">
+            <button type="button" class="btn">Limpiar</button>
+        </a>
+        {{/if}}
+    </form>
+</div>
+<br>
+<!-- Modal corregido -->
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <form method="post" action="/galeria" enctype="multipart/form-data">
+      <input id="id" name="id" type="hidden">
+
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="titulo" name="titulo" type="text" required>
+          <label for="titulo">Título</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="input-field col s12">
+          <textarea id="descripcion" name="descripcion" class="materialize-textarea" required></textarea>
+          <label for="descripcion">Descripción</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="file-field input-field col s12">
+          <div class="btn">
+            <span>Imagen</span>
+            <input id="imagen" type="file" name="imagen" accept="image/*" required>
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path validate" type="text" placeholder="Sube una imagen">
+          </div>
+        </div>
+      </div>
+
+      <!-- Vista previa de imagen actual al editar -->
+      <div class="row" id="imagen-actual" style="display: none;">
+        <div class="col s12">
+          <p>Imagen actual:</p>
+          <img id="preview-imagen" src="" alt="Imagen actual" style="max-width: 200px; max-height: 200px;">
+          <p><small>Deja el campo vacío si no quieres cambiar la imagen</small></p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-close btn">Cancelar</button>
+        <button type="submit" class="btn">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="container">
+    <a class="btn modal-trigger" id="nuevo-btn" href="#modal1" onclick="limpiarFormulario(); document.getElementById('imagen').required = true;">Crear Nueva Entrada</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Imagen</th>
+                <th>Titulo</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each fraternidades.result}}
+            <tr>
+                <td>
+                    {{#if this.imagen}}
+                    <img src="/images/{{this.imagen}}" alt="{{this.titulo}}" style="width: 100px; height: 100px; object-fit: cover;">
+                    {{else}}
+                    Sin imagen
+                    {{/if}}
+                </td>
+                <td>{{this.titulo}}</td>
+                <td>{{this.descripcion}}</td>
+                <td>
+                    <a class="btn editar-btn" 
+                        onclick="editarRegistro('{{this.id}}', '{{this.titulo}}', '{{this.descripcion}}', '{{this.imagen}}'); return false;">
+                        <i class="material-icons">create</i>
+                    </a>
+                    <a class="btn red" href="/galeria/eliminar/{{this.id}}" onclick="return confirm('¿Seguro que deseas eliminar esta entrada de la galería?')">
+                        <i class="material-icons">delete</i>
+                    </a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{#if buscar}}
+    {{else}}
+    {{>paginar}}
+    {{/if}}
+</div>
+
+<script>
+  let modalInstance;
+
+  // Función global para limpiar formulario
+  function limpiarFormulario() {
+    console.log('Limpiando formulario');
+    
+    document.getElementById('id').value = '';
+    document.getElementById('titulo').value = '';
+    document.getElementById('descripcion').value = '';
+    document.getElementById('imagen-actual').style.display = 'none';
+
+    const fileInput = document.getElementById('imagen');
+    fileInput.value = '';
+    
+    const filePath = fileInput.closest('.file-field').querySelector('.file-path');
+    if (filePath) filePath.value = '';
+
+    M.updateTextFields();
+    
+    const textarea = document.getElementById('descripcion');
+    if (textarea) M.textareaAutoResize(textarea);
+  }
+
+  // Función global para editar
+  function editarRegistro(id, titulo, descripcion, imagen) {
+    console.log('Editando registro:', { id, titulo, descripcion, imagen });
+    
+    // Establecer valores
+    document.getElementById('id').value = id;
+    document.getElementById('titulo').value = titulo;
+    document.getElementById('descripcion').value = descripcion;
+    
+    // Mostrar imagen actual si existe
+    if (imagen && imagen !== 'undefined' && imagen !== '') {
+      document.getElementById('preview-imagen').src = `/images/${imagen}`;
+      document.getElementById('imagen-actual').style.display = 'block';
+    } else {
+      document.getElementById('imagen-actual').style.display = 'none';
+    }
+    
+    // Al editar, la imagen no es requerida
+    document.getElementById('imagen').required = false;
+    
+    // Actualizar los labels de Materialize
+    M.updateTextFields();
+    
+    // Actualizar textareas
+    const textarea = document.getElementById('descripcion');
+    if (textarea) M.textareaAutoResize(textarea);
+    
+    // Abrir modal
+    if (modalInstance) {
+      modalInstance.open();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Inicializar modales
+    const elems = document.querySelectorAll('.modal');
+    M.Modal.init(elems);
+    modalInstance = M.Modal.getInstance(document.getElementById('modal1'));
+
+    const elemsSelect = document.querySelectorAll('select');
+    M.FormSelect.init(elemsSelect);
+
+    const form = document.querySelector('#modal1 form');
+
+    // Submit: cambia la acción según si hay ID
+    form.addEventListener('submit', function (e) {
+      const idValue = document.getElementById('id').value.trim();
+      console.log('Submit - ID Value:', idValue);
+      
+      if (idValue && !isNaN(parseInt(idValue)) && parseInt(idValue) > 0) {
+        this.action = `/galeria/${idValue}`;
+        console.log('Editando - Action:', this.action);
+      } else {
+        this.action = '/galeria';
+        document.getElementById('id').value = '';
+        console.log('Creando nuevo - Action:', this.action);
+      }
+    });
+  });
+</script>

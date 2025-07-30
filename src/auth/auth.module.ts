@@ -6,7 +6,9 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module'; 
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
+import { ClientesesionModule } from 'src/clientesesion/clientesesion.module';
 
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     UsersModule,
@@ -14,9 +16,9 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtModule.register({
       secret: 'tu-secreto-jwt',
       signOptions: { expiresIn: '1d' },
-    }),
+    }),ClientesesionModule,ConfigModule,
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy,],
   controllers: [AuthController],
 })
 export class AuthModule {}

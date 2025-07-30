@@ -5,11 +5,12 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserNuevoDto } from './dto/users.dto';
 import { title } from 'process';
 import { Paginate } from 'src/shared/paginate';
+import { updateUser } from './dto/updateuser.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
+  
   @Get('register')
   @Render('register')
   getRegister() {
@@ -33,7 +34,6 @@ export class UsersController {
        @Query('paginaActual') actual=0,
         @Query('itemPaginas') items=2,
         @Query('buscar') buscar = ''){
-            //actual--;
         const users = await  
         this.usersService.getAllPagination(items,actual,buscar);        
         return res.render('users/index',{
@@ -71,7 +71,7 @@ export class UsersController {
     }
     //crear -storage
     @Post('/edit/:id')
-    async update(@Body() udpateUser:UserNuevoDto, @Param('id') id:number, @Res() res:Response){
+    async update(@Body() udpateUser:updateUser, @Param('id') id:number, @Res() res:Response){
         const final = {
           ...udpateUser,
           isActive: String(udpateUser.isActive) === 'true'
@@ -92,5 +92,7 @@ export class UsersController {
         let result = await this.usersService.delete(id);
         
     }
+
+    
 
 }

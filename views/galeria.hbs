@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería - Ch'utillos</title>
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Font Awesome for social icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Minimal CSS */
+        .hero-section {
+            height: 50vh;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/galeriaheader.jpg');
+            background-size: cover;
+            background-position: top;
+        }
+        
+        .gallery-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .card-title-custom {
+            font-size: 1.1rem !important;
+            font-weight: bold !important;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .hero-section {
+                height: 40vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    {{>headercliente}}
+
+    <!-- Hero Section -->
+    <section class="hero-section valign-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col s12 center-align">
+                    <h1 class="white-text">Galería</h1>
+                    <p class="white-text flow-text">ch'utillos 2025</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="section white">
+        <div class="container">
+            <!-- Section Title -->
+            <div class="row">
+                <div class="col s12">
+                    <h4 class="grey-text text-darken-2">Orden de las fraternidades que participaran en la entrada</h4>
+                    <p class="grey-text">ch'utillos 2025</p>
+                </div>
+            </div>
+            {{fraternidades.result}}
+            <!-- Gallery Grid -->
+            <div class="row">
+                {{#each fraternidades.result}}
+                <div class="col s12 m6 l4">
+                    <div class="card gallery-card">
+                        <div class="card-image">
+                            <img src="/images/{{this.imagen}}" alt="{{this.titulo}}" class="materialboxed">
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title card-title-custom grey-text text-darken-4">
+                                {{this.titulo}}
+                            </span>
+                            <p class="grey-text text-darken-1">{{this.descripcion}}</p>
+                        </div>
+                        <div class="card-action">
+                            <a href="#" class="orange-text text-darken-2">Ver más</a>
+                            <a href="#" class="orange-text text-darken-2 right">
+                                <i class="material-icons left">share</i>Compartir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            <!-- Load More Button -->
+            <div class="row">
+                <div class="col s12 center-align">
+                    <a href="#" id="btn-cargar-mas" class="btn-large orange darken-2 waves-effect waves-light"> 
+                        <i class="material-icons left">refresh</i>Cargar más
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="center-align">
+    {{>paginar}}
+    </div>
+    <!-- Footer -->
+    {{>footercliente}}
+
+
+
+    <!-- Materialize JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        // Initialize Materialize components
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize materialbox for image zoom
+            var materialboxElems = document.querySelectorAll('.materialboxed');
+            M.Materialbox.init(materialboxElems);
+            
+            // Initialize floating action button
+            var fabElems = document.querySelectorAll('.fixed-action-btn');
+            M.FloatingActionButton.init(fabElems);
+            
+            // Initialize tooltips
+            var tooltipElems = document.querySelectorAll('.tooltipped');
+            M.Tooltip.init(tooltipElems);
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        const btncargar = document.getElementById('btn-cargar-mas');
+
+        btncargar.addEventListener('click', function (e) {
+            e.preventDefault(); // evita que se recargue la página
+
+            const url = new URL(window.location.href);
+            let pagina = parseInt(url.searchParams.get('paginaActual')) || 0;
+            let itemPaginas = parseInt(url.searchParams.get('itemPaginas')) || 2;
+
+            itemPaginas += 2; // Aumenta de 2 en 2
+
+            url.searchParams.set('paginaActual', pagina);
+            url.searchParams.set('itemPaginas', itemPaginas);
+
+            // Redirige con los nuevos valores
+            window.location.href = url.toString();
+        });
+    </script>
+</body>
+</html>

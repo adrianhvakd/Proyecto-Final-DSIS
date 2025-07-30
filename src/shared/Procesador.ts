@@ -20,7 +20,6 @@ export class ArchivoProcesador {
       defval: '',
     });
 
-    // Mapear datos con corrección según tipo de archivo
     return datos.map((fila) => {
       if (esExcel) {
         return {

@@ -67,13 +67,23 @@ export class ClienteService {
     return (respuesta.affected ?? 0) >= 1;
   }
 
-  async procesarArchivo(pathArchivo: string) {
+  public async procesarArchivo(pathArchivo: string) {
     const procesador = ArchivoProcesador.getInstance();
-
-    // Obtiene datos ya procesados y con codificación correcta
     const datosProcesados = procesador.leerDatos(pathArchivo);
 
-    // Mapea a la entidad Cliente
+    for (const fila of datosProcesados) {
+      const existe = await this.clienteRepository.findOne({
+        where: { codVivienda: fila.codVivienda },
+      });
+
+      if (existe) {
+        fs.unlinkSync(pathArchivo);
+        return {
+          mensaje: `Error: ya existe el cliente '${fila.nombre}' con codVivienda '${fila.codVivienda}'.`,
+        };
+      }
+    }
+
     const clientes = datosProcesados.map((fila) => {
       const cliente = new Cliente();
       cliente.nombre = fila.nombre;
@@ -90,4 +100,5 @@ export class ClienteService {
       ? { mensaje: `Se insertaron ${clientes.length} clientes.` }
       : { mensaje: 'No se insertaron clientes.' };
   }
+
 }

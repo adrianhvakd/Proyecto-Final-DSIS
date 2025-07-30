@@ -14,6 +14,7 @@
     </form>
 </div>
 
+<br>
 
 <div id="modal1" class="modal">
     <div class="modal-content">
@@ -105,7 +106,7 @@
                         </a>
                     </div>
                     <div class="col s6">
-                        <a style="color: white" href="/puestos/delete/{{this.id}}"  onclick="return confirm('¿Estás seguro de borrar este cliente?')" class="btn"><i class="material-icons">delete</i></a>
+                        <a style="color: white" href="/puestos/delete/{{this.id}}"  onclick="return confirm('¿Estás seguro de borrar este cliente?')" class="btn red"><i class="material-icons">delete</i></a>
                     </div>
                 </div>
             </td>
@@ -140,7 +141,6 @@
     let aux;
     
     {{#each puestos}}
-        console.log({{puestos.lat}});
         aux = (L.circle([{{this.lat}}, {{this.long}}], {
         color: {{#if this.disponible}}'green'{{else}}'red'{{/if}},
         fillOpacity: 0.5,
@@ -179,10 +179,9 @@
             .setContent(popupContent)
             .openOn(map);
 
-        // Preparar formulario para CREAR (sin cambiar action aquí)
         document.getElementById('lat').value = e.latlng.lat;
         document.getElementById('long').value = e.latlng.lng;
-        document.getElementById('id').value = ''; // ID vacío = crear
+        document.getElementById('id').value = '';
         document.getElementById('ubicacion').value = '';
         document.getElementById('precio').value = '';
         document.getElementById('numero').value = '';
@@ -201,53 +200,36 @@
         var elemsSelect = document.querySelectorAll('select');
         M.FormSelect.init(elemsSelect);
 
-        // 🔥 SOLUCIÓN 1: Interceptar el envío del formulario y validar por ID
         document.querySelector('#modal1 form').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevenir envío normal
+            e.preventDefault(); 
             
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
             const idValue = document.getElementById('id').value;
             
-            console.log('📋 Datos del formulario:', data);
-            console.log('🔍 ID encontrado:', idValue);
-            console.log('🔍 Tipo de ID:', typeof idValue);
             
             if (idValue && idValue.trim() !== '' && idValue !== 'NaN' && !isNaN(parseInt(idValue))) {
-                // EDITAR - cambiar la acción del formulario
-                console.log('🔄 Modo EDITAR - ID:', idValue);
                 this.action = `/puestos/editar/${idValue}`;
             } else {
-                // CREAR - usar la acción original y limpiar ID completamente
-                console.log('🟢 Modo CREAR - Limpiando ID');
                 this.action = '/puestos/puestosform';
                 
-                // 🚨 CRÍTICO: Remover el campo ID del formulario para crear
                 const idField = document.getElementById('id');
                 idField.value = '';
-                idField.removeAttribute('name'); // Temporalmente quitar el name para que no se envíe
-                
-                // Restaurar el name después del envío
+                idField.removeAttribute('name'); 
+
                 setTimeout(() => {
                     idField.setAttribute('name', 'id');
                 }, 100);
             }
-            
-            console.log('🎯 Enviando a:', this.action);
-            
-            // Ahora sí enviar el formulario
+                        
             this.submit();
         });
 
-        // Manejar clic en botón "Editar"
         document.addEventListener('click', function(e) {
             const btn = e.target.closest('.editar-btn');
             if (btn) {
                 e.preventDefault();
 
-                console.log('✏️ Editando puesto ID:', btn.dataset.id);
-
-                // Llenar formulario
                 document.getElementById('lat').value = btn.dataset.lat;
                 document.getElementById('long').value = btn.dataset.long;
                 document.getElementById('ubicacion').value = btn.dataset.ubicacion;

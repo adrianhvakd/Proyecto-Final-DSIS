@@ -21,16 +21,16 @@ export class Puesto {
     disponible: boolean;
 
     @Column({ type: 'varchar', length: 100, default: null })
-    comprador: string;
+    comprador: string | null;
 
     @Column({ type: 'int'})
     numero: number;
 
     @Column({ type: 'int', default: null })
-    factura: number;
+    factura: number | null;
 
     @Column({ type: 'varchar', length: 100, default: null })
-    codVivienda: string;
+    codVivienda: string | null;
 
     @CreateDateColumn()
     createdAt: Date;

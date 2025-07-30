@@ -1,14 +1,15 @@
-import { Controller, Get, Post, Body, Param, Render, Redirect, Res, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Render, Redirect, Res, Query, UseGuards } from '@nestjs/common';
 import { CronogramaService } from './cronograma.service';
 import { CronogramaDto } from './dto/cronograma.dto';
 import { Response } from 'express';
 import { title } from 'process';
 import { Paginate } from 'src/shared/paginate';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('cronograma')
 export class CronogramaController {
   constructor(private readonly service: CronogramaService) {}
-
+  @UseGuards(AuthGuard('jwt'))
   @Get('')
   async index(@Res() res:Response,
     @Query('paginaActual') actual=0,

@@ -15,9 +15,7 @@
 
         <label>Apellidos</label>
         <input type="text" name="lastNames" value="{{item.lastNames}}" required>
-
-        {{#if item.id}}<label>Contraseña</label>{{/if}}
-        <input type="{{#if item.id}}text{{else}}hidden{{/if}}" name="password" value="{{item.password}}">        
+ 
 
         <label for="estado">Activar/Desactivar</label>
         <input type="hidden" id="estado" name="isActive" value="{{#if item.isActive}}true{{else}}false{{/if}}">

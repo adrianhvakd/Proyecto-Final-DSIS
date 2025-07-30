@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Puesto } from './entities/puesto.entity';
-import { FindOptionsWhere, ILike, Raw, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, IsNull, Not, Raw, Repository } from 'typeorm';
+import { IsBoolean } from 'class-validator';
 
 
 @Injectable()
@@ -20,13 +21,21 @@ export class PuestosService {
     const result = await this.puestoRepository.find();
     return result;
   }
+  public async getbyId(id){
+    const rasult = await this.puestoRepository.findOne({where: {id}});
+    return rasult;
+  }
 
   findOne(id: number) {
     return `This action returns a #${id} puesto`;
   }
 
   async update(id: number, updatePuestoDto) {
-    updatePuestoDto.disponible == 'true' ? updatePuestoDto.disponible = true : updatePuestoDto.disponible = false;
+    console.log(updatePuestoDto.disponible);
+    if( !IsBoolean(updatePuestoDto.disponible)){
+      updatePuestoDto.disponible == 'true' ? updatePuestoDto.disponible = true : updatePuestoDto.disponible = false;
+    }
+    console.log(updatePuestoDto.disponible);
     return await this.puestoRepository.update(id, updatePuestoDto)
   }
 
@@ -52,7 +61,6 @@ export class PuestosService {
           { comprador: ILike(`%${buscarTrim}%`) },
           { codVivienda: ILike(`%${buscarTrim}%`) },
           { ubicacion: ILike(`%${buscarTrim}%`) },
-          // Convertimos a texto explícitamente para LIKE, sin Number()
           { precio: Raw(alias => `CAST(${alias} AS CHAR) LIKE '%${buscarTrim}%'`) },
           { numero: Raw(alias => `CAST(${alias} AS CHAR) LIKE '%${buscarTrim}%'`) },
         ];
@@ -72,4 +80,71 @@ export class PuestosService {
         count:cantidad
     }
   }
+
+  public async getVentas(limit: number, offset: number, buscar: string) {
+    let where: FindOptionsWhere<Puesto>[] = [];
+
+    const buscarTrim = buscar?.trim();
+    const buscarLower = buscarTrim?.toLowerCase();
+    const isBooleanSearch = buscarLower === 'true' || buscarLower === 'false';
+    const booleanValue = buscarLower === 'true';
+
+    if (buscarTrim) {
+      if (isBooleanSearch) {
+        where.push({
+          disponible: booleanValue,
+          comprador: Not(IsNull())
+        });
+      } else {
+        // Aplicar condición comprador: Not(IsNull()) a cada filtro
+        where = [
+          { comprador: ILike(`%${buscarTrim}%`) },
+          { codVivienda: ILike(`%${buscarTrim}%`) },
+          { ubicacion: ILike(`%${buscarTrim}%`) },
+          { precio: Raw(alias => `CAST(${alias} AS CHAR) LIKE '%${buscarTrim}%'`) },
+          { numero: Raw(alias => `CAST(${alias} AS CHAR) LIKE '%${buscarTrim}%'`) },
+        ].map(filtro => ({
+          ...filtro,
+          comprador: filtro.comprador ?? Not(IsNull())
+        }));
+      }
+    } else {
+      // No hay búsqueda: solo mostrar donde comprador no es null
+      where = [{ comprador: Not(IsNull()) }];
+    }
+
+    // Configuración de opciones: paginar solo si NO hay búsqueda
+    const options: any = {
+      where
+    };
+    if (!buscarTrim) {
+      options.take = limit;
+      options.skip = offset;
+    }
+
+    const [data, cantidad] = await this.puestoRepository.findAndCount(options);
+
+    return {
+      result: data,
+      count: cantidad
+    };
+  }
+
+  public async getVentaspdf() {
+  const where = [{ comprador: Not(IsNull()) }];
+
+  const options: any = { where };
+
+  const [data, cantidad] = await this.puestoRepository.findAndCount(options);
+
+  return {
+    result: data,
+    count: cantidad
+  };
+}
+
+
+
+
+
 }

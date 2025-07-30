@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  {{>headercliente}}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<!-- MODAL DE FORMULARIO -->
+<div id="modal1" class="modal">
+  <div class="modal-content">
+        <form id="formulario-puesto" method="post" action="/puestos/puestosform">
+        <input id="id" name="id" type="hidden">
+        <div class="row">
+            <div class="input-field col s12">
+            <input id="comprador" name="comprador" type="text" required>
+            <label for="comprador">Nombre Completo</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+            <input id="codVivienda" name="codVivienda" type="text" required>
+            <label for="codVivienda">Codigo de Vivienda</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <p>Pago por QR</p>
+                <canvas id="qr"></canvas>
+            </div>
+        </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="modal-close btn">Cancelar</button>
+    <button type="submit" class="btn">Enviar</button>
+  </div>
+        </form>
+</div>
+
+
+<!-- MAPA -->
+<div id="map" class="container" style="height: 400px; width: 70%;"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const elems = document.querySelectorAll('.modal');
+    M.Modal.init(elems);
+
+    const modalForm = M.Modal.getInstance(document.getElementById('modal1'));
+
+    let map = L.map('map').setView([-19.579006, -65.757464], 15);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 20,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    let puestos = [];
+    let aux;
+
+    {{#each puestos}}
+      aux = L.circle([{{this.lat}}, {{this.long}}], {
+        color: {{#if this.disponible}}'green'{{else}}'red'{{/if}},
+        fillOpacity: 0.5,
+        radius: 5
+      }).addTo(map);
+      {{#if this.disponible}}
+      aux.bindPopup(`
+        <strong class="tituloMap">Numero: {{this.numero}}</strong><br>
+        Direccion: {{this.ubicacion}}<br>
+        <strong>Bs. {{this.precio}} </strong><br>
+        <a 
+          style = "color: white"
+          class="btn modal-trigger editar-btn"
+          href="#modal1"
+          data-id="{{this.id}}"
+          data-comprador="{{this.comprador}}"
+          data-codvivienda="{{this.codVivienda}}"
+          data-ubicacion="{{this.ubicacion}}"
+          data-precio="{{this.precio}}"
+        >Comprar</a>
+      `);
+      {{else}}
+      aux.bindPopup(`
+        <strong class="tituloMap">Numero: {{this.numero}}</strong><br>
+        Direccion: {{this.ubicacion}}<br>
+        <strong>Bs. {{this.precio}} </strong><br>
+        <strong style= "color: red">VENDIDO</strong>
+      `);
+      {{/if}}
+      puestos.push(aux);
+    {{/each}}
+
+    document.addEventListener('click', function (e) {
+        const canvas = document.getElementById('qr');
+        QRCode.toCanvas(canvas, 'josejose', function (error) {
+            if (error) console.error(error);
+            else console.log('QR generado correctamente');
+        });
+
+        const btn = e.target.closest('.editar-btn');
+        if (btn) {
+            e.preventDefault();
+            document.getElementById('id').value = btn.dataset.id || '';
+            document.getElementById('comprador').value = btn.dataset.comprador || '';
+            document.getElementById('codVivienda').value = btn.dataset.codvivienda || '';
+
+            M.updateTextFields();
+            modalForm.open();
+        }
+    });
+
+    document.getElementById('formulario-puesto').addEventListener('submit', function (e) {
+
+      const idValue = document.getElementById('id').value;
+
+      if (idValue && idValue.trim() !== '' && !isNaN(parseInt(idValue))) {
+        this.action = `/puestos/venta/${idValue}`; 
+      } else {
+        this.action = '/puestos/venta';
+      }
+
+    });
+
+  });
+</script>
+
+{{>footercliente}}
+</body>
+</html>

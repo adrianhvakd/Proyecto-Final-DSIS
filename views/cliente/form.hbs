@@ -4,25 +4,24 @@
 <div class="container">
 
     <form id="clienteForm" action="/cliente/{{#if item.id}}edit/{{item.id}}{{/if}}" method="Post">
-        
         <label>Nombres</label>
-        <input type="text" name="nombre" value="{{item.nombre}}" required>
+            <input type="text" name="nombre" value="{{item.nombre}}" required>
 
-        <label>Apellidos</label>
-        <input type="text" name="apellidos" value="{{item.apellidos}}" required>
+            <label>Apellidos</label>
+            <input type="text" name="apellidos" value="{{item.apellidos}}" required>
 
-        <label>Codigo de vivienda</label>
-        <input type="text" name="codVivienda" value="{{item.codVivienda}}" required>
-   
-        <label for="estado">¿Impuestos pagados?</label>
-        <input type="hidden" id="estado" name="pagoImpuesto" value="{{#if item.pagoImpuesto}}true{{else}}false{{/if}}">
-        <br>
-        <!-- botón que no envía el formulario -->
-        <button type="button" onclick="toggleEstado()">{{#if item.pagoImpuesto}}SI{{else}}NO{{/if}}</button>
-        <br>
-        <br>
-        <button type="reset" class="btn">Limpiar</button>
-        <input type="submit" class="btn" value="Guardar"/>
+            <label>Codigo de vivienda</label>
+            <input type="text" name="codVivienda" value="{{item.codVivienda}}" required>
+    
+            <label for="estado">¿Impuestos pagados?</label>
+            <input type="hidden" id="estado" name="pagoImpuesto" value="{{#if item.pagoImpuesto}}true{{else}}false{{/if}}">
+            <br>
+            <!-- botón que no envía el formulario -->
+            <button type="button" onclick="toggleEstado()">{{#if item.pagoImpuesto}}SI{{else}}NO{{/if}}</button>
+            <br>
+            <br>
+            <button type="reset" class="btn">Limpiar</button>
+            <input type="submit" class="btn" value="Guardar"/>
     </form>
 </div>    
     <br>

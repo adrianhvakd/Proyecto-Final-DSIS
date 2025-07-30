@@ -1,0 +1,112 @@
+{{>sidebar}}
+{{>titulo}}
+
+<div class="container">
+    <form method="get" action="">
+        <input type="text" name="buscar" placeholder="Buscar evento, fase..." value="{{buscar}}" required />
+        <button type="submit" class="btn">Buscar</button>
+        {{#if buscar}}
+        <a href="/puestos/ventasAdm">
+            <button type="button" class="btn">Limpiar</button>
+        </a>
+        {{/if}}
+    </form>
+</div>
+<br>
+<div class="row">
+    <div class="col s6">
+        <a onclick="
+            let win=window.open('/puestos/GenerarPrint', 'popup', 'width=600,height=600');
+            win.print();
+            win.window.onafterprint = function(){
+                win.window.close();
+            }
+            return false;"  target="_blank" class="waves-effect waves-light btn">
+                <i class="material-icons left">print</i>
+                Imprimir
+        </a>
+    </div>
+    <div class="col s6">
+        <a href="/puestos/GenerarPdf" class="waves-effect waves-light btn">
+            <i class="material-icons left">attach_file</i>
+            Generar PDF
+        </a>
+    </div>
+</div>
+
+<!-- Modal Confirmación Anulación -->
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <h5>¿Confirmar anulación de la venta?</h5>
+        <form method="post" action="/puestos/anularventa" id="formAnularVenta">
+            <input id="id" name="id" type="hidden" />
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="modal-close btn grey">Cancelar</button>
+        <button type="submit" class="btn red">Anular</button>
+    </div>
+        </form>
+</div>
+
+<div class="container">
+    <table>
+        <thead>
+            <tr>
+                <th>Numero</th>
+                <th>Ubicacion</th>
+                <th>Precio</th>
+                <th>Comprador</th>
+                <th>Numero de factura</th>
+                <th>Codigo de vivienda</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each cronogramas.result}}
+            <tr>
+                <td>{{this.numero}}</td>
+                <td>{{this.ubicacion}}</td>
+                <td>{{this.precio}}</td>
+                <td>{{this.comprador}}</td>
+                <td>{{this.factura}}</td>
+                <td>{{this.codVivienda}}</td>
+                <td>
+                    <a class="btn red editar-btn" href="#modal1"
+                       data-id="{{this.id}}">
+                        <i class="material-icons">cancel</i> Anular
+                    </a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{#if buscar}}
+    {{else}}
+    {{>paginar}}
+    {{/if}}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        M.Modal.init(elems);
+
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.editar-btn');
+            if (btn) {
+                document.getElementById('id').value = btn.dataset.id;
+
+                const modal = M.Modal.getInstance(document.getElementById('modal1'));
+                modal.open();
+            }
+        });
+
+        // Opcional: si quieres prevenir envíos sin id o validar antes de enviar
+        document.getElementById('formAnularVenta').addEventListener('submit', function(e) {
+            if (!document.getElementById('id').value) {
+                e.preventDefault();
+                M.toast({html: 'ID no válido para anular.'});
+            }
+        });
+    });
+</script>

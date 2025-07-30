@@ -11,6 +11,13 @@ import { PuestosModule } from './puestos/puestos.module';
 import { Puesto } from './puestos/entities/puesto.entity';
 import { CronogramaModule } from './cronograma/cronograma.module';
 import { Cronograma } from './cronograma/entities/cronograma.entity';
+import { GaleriaModule } from './galeria/galeria.module';
+import { VentasModule } from './ventas/ventas.module';
+import { Galeria } from './galeria/entities/galeria.entity';
+import { ContactoModule } from './contacto/contacto.module';
+import { Contacto } from './contacto/entities/contacto.entity';
+import { ClientesesionModule } from './clientesesion/clientesesion.module';
+import { Clientesesion } from './clientesesion/entities/clientesesion.entity';
 
 
 @Module({
@@ -20,10 +27,10 @@ import { Cronograma } from './cronograma/entities/cronograma.entity';
     port: 3306,
     username: 'root',
     password: '',
-    database: 'aea2',
-    entities: [User,Cliente,Puesto,Cronograma],
+    database: 'aea3',
+    entities: [User,Cliente,Puesto,Cronograma,Galeria,Contacto,Clientesesion],
     synchronize: true,
-  }), UsersModule, AuthModule, ClienteModule, PuestosModule, CronogramaModule,CronogramaModule],
+  }), UsersModule, AuthModule, ClienteModule, PuestosModule, CronogramaModule,CronogramaModule, GaleriaModule, VentasModule, ContactoModule, ClientesesionModule],
   controllers: [AppController],
   providers: [AppService],
 })

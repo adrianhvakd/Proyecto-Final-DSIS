@@ -1,10 +1,14 @@
 {{>sidebar}}
-
 {{>titulo}}
+
+{{#if result.mensaje}}
+  <div class="alert alert-info">{{result.mensaje}}</div>
+{{/if}}
+
 <div class="container">
     <form method="get" action="">
-    <input type="text" name="buscar" placeholder="Buscar..." value="{{buscar}}" required/>
-    <button type="submit" class="btn">Buscar</button>
+        <input type="text" name="buscar" placeholder="Buscar..." value="{{buscar}}" required />
+        <button type="submit" class="btn">Buscar</button>
         {{#if buscar}}
         <a href="/cliente">
             <button type="button" class="btn">Limpiar</button>
@@ -13,52 +17,151 @@
     </form>
 </div>
 <br>
-<!-- 🔽 NUEVO FORMULARIO PARA CARGAR CLIENTES -->
+
 <div class="container">
     <form method="POST" action="/cliente/cargar" enctype="multipart/form-data">
-        <div class="file-field input-field">
-            <div class="btn">
-                <span>Subir archivo</span>
-                <input type="file" name="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" required>
+        <div class="row">
+            <div class="file-field input-field col s6">
+                <div class="btn">
+                    <span>Subir archivo</span>
+                    <input type="file" name="file" accept=".csv, .xlsx, .xls" required>
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text" placeholder="Selecciona un archivo CSV o Excel">
+                </div>
             </div>
-            <div class="file-path-wrapper">
-                <input class="file-path validate" type="text" placeholder="Selecciona un archivo CSV o Excel">
+            <div class="col s6">
+                <button type="submit" class="btn">Cargar clientes</button>
             </div>
         </div>
-        <button type="submit" class="btn">Cargar clientes</button>
     </form>
 </div>
+
 <br>
 <div class="container">
-    <a href="/cliente/formcliente" class="btn">Agregar nuevo cliente</a>
+    <a class="btn modal-trigger" href="#modalCliente" onclick="limpiarCliente()">Agregar nuevo cliente</a>
 </div>
+
+<!-- MODAL -->
+<div id="modalCliente" class="modal">
+    <div class="modal-content">
+        <form method="POST" action="/cliente" id="formCliente">
+            <input id="id" name="id" type="hidden">
+
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="nombre" name="nombre" type="text" required>
+                    <label for="nombre">Nombres</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="apellidos" name="apellidos" type="text" required>
+                    <label for="apellidos">Apellidos</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="codVivienda" name="codVivienda" type="text" required>
+                    <label for="codVivienda">Código Catastral</label>
+                </div>
+                <div class="input-field col s6">
+                    <select id="pagoImpuesto" name="pagoImpuesto">
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
+                    </select>
+                    <label for="pagoImpuesto">Pago Impuestos</label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="modal-close btn">Cancelar</button>
+                <button type="submit" class="btn">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- TABLA -->
 <div class="container">
     <table>
-        <tr>
-            <th>Nombres</th>
-            <th>Apellidos</th>
-            <th>codigo Catastral</th>
-            <th>Pago Impuestos</th>
-            <th>Acciones</th>
-        </tr>
-        
-        {{#each clientes.result}}
-        <tr>
-            <td>{{this.nombre}}</td>
-            <td>{{this.apellidos}}</td>
-            <td>{{this.codVivienda}} </td>
-            <td>{{#if this.pagoImpuesto}}SI{{else}}NO{{/if}} </td>
-            <td>
-                <a href="/cliente/formedit/{{this.id}}" ><i class="material-icons">create</i></a>
-                <a href="/cliente/delete/{{this.id}}" onclick="return confirm('¿Estás seguro de borrar este cliente?')"><i class="material-icons">delete</i></a>
-            </td>
-        </tr>
-        {{/each}}
+        <thead>
+            <tr>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Código Catastral</th>
+                <th>Pago Impuestos</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each clientes.result}}
+            <tr>
+                <td>{{this.nombre}}</td>
+                <td>{{this.apellidos}}</td>
+                <td>{{this.codVivienda}}</td>
+                <td>{{#if this.pagoImpuesto}}SI{{else}}NO{{/if}}</td>
+                <td>
+                    <a class="btn editar-cliente" href="#modalCliente"
+                       data-id="{{this.id}}"
+                       data-nombre="{{this.nombre}}"
+                       data-apellidos="{{this.apellidos}}"
+                       data-codvivienda="{{this.codVivienda}}"
+                       data-pagoimpuesto="{{this.pagoImpuesto}}">
+                        <i class="material-icons">create</i>
+                    </a>
+                    <a href="/cliente/delete/{{this.id}}" class="btn red" onclick="return confirm('¿Estás seguro de borrar este cliente?')">
+                        <i class="material-icons">delete</i>
+                    </a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
     </table>
-    {{#if buscar}}
-    {{else}}
-    {{>paginar}}
-    {{/if}}
+
+    {{#unless buscar}}
+        {{>paginar}}
+    {{/unless}}
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        M.Modal.init(document.querySelectorAll('.modal'));
+        M.FormSelect.init(document.querySelectorAll('select'));
 
+        document.getElementById('formCliente').addEventListener('submit', function (e) {
+            const id = document.getElementById('id').value;
+            if (id && !isNaN(parseInt(id))) {
+                this.action = '/cliente/formedit/' + id;
+            } else {
+                this.action = '/cliente';
+            }
+        });
+
+        document.querySelectorAll('.editar-cliente').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.getElementById('id').value = this.dataset.id;
+                document.getElementById('nombre').value = this.dataset.nombre;
+                document.getElementById('apellidos').value = this.dataset.apellidos;
+                document.getElementById('codVivienda').value = this.dataset.codvivienda;
+                document.getElementById('pagoImpuesto').value = this.dataset.pagoimpuesto === 'true' ? 'true' : 'false';
+
+                M.updateTextFields();
+                M.FormSelect.init(document.querySelectorAll('select'));
+
+                const modal = M.Modal.getInstance(document.getElementById('modalCliente'));
+                modal.open();
+            });
+        });
+    });
+
+    function limpiarCliente() {
+        document.getElementById('id').value = '';
+        document.getElementById('nombre').value = '';
+        document.getElementById('apellidos').value = '';
+        document.getElementById('codVivienda').value = '';
+        document.getElementById('pagoImpuesto').value = 'true';
+
+        M.updateTextFields();
+        M.FormSelect.init(document.querySelectorAll('select'));
+    }
+</script>

@@ -1,4 +1,136 @@
-{{>titulo}}
-<div class="container">
-    <a href="/login" class="btn ">Iniciar Sesion</a>
-</div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ch'utillos</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            height: 50vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/images/sanbartoindex.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .hero-content h1 {
+            font-size: 4rem !important;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+        
+        .hero-content p {
+            font-size: 1.5rem !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+        
+        .content-image img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        
+        .map-container {
+            height: 400px;
+            background-image: url('/images/recorrido.jpg');
+        }
+        
+        .btnmargen{
+            border: solid,white;
+                
+        }
+
+        @media only screen and (max-width: 992px) {
+            .hero-content h1 { font-size: 3rem !important; }
+            .hero-content p { font-size: 1.3rem !important; }
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .hero-content h1 { font-size: 2.5rem !important; }
+            .hero-content p { font-size: 1.2rem !important; }
+        }
+    </style>
+</head>
+<body>
+    {{>headercliente}}
+    <section class="hero-section valign-wrapper" id="inicio">
+        <div class="container">
+            <div class="row">
+                <div class="col s12 center-align">
+                    <div class="hero-content white-text">
+                        <h1 class="flow-text">Ch'utillos</h1>
+                        <p class="flow-text">La festividad más grande de Bolivia</p>
+                        <div class="section">
+                            <a href="/puestos/ventas" class="btn-large orange darken-2 waves-effect waves-light">Comprar Puesto</a>
+                            <a href="/galeria" class="btnmargen btn-large transparent white-text waves-effect waves-light">Ver Galeria</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section grey lighten-4" id="historia">
+        <div class="container">
+            <div class="row">
+                <div class="col s12 m6 l6">
+                    <div class="content-image">
+                        <img src="/images/sanbartolodibujoindex.jpg" 
+                             alt="Ch'utillos Festival" class="materialboxed responsive-img">
+                    </div>
+                </div>
+                <div class="col s12 m6 l6">
+                    <h2 class="header">¿Qué es Ch'utillos?</h2>
+                    <p class="flow-text grey-text text-darken-2">
+                        Ch'utillos es una de las festividades folklóricas más importantes y representativas de Bolivia, 
+                        especialmente celebrada en la ciudad de Potosí. Esta colorida celebración que se lleva a cabo 
+                        anualmente en Potosí Bolivia, es famosa a nivel internacional por la calidad de su danza, 
+                        procedencia, música cultural, bailes gastronómicos, y la participación de algunos inmigrantes bolivianos.
+                    </p>
+                    <p class="grey-text text-darken-2">
+                        La festividad representa una mezcla única de tradiciones ancestrales y costumbres modernas, 
+                        donde la comunidad se reúne para celebrar con música, danza y arte típico de la región, 
+                        manteniendo viva la herencia cultural por la UNESCO.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section white" id="programa">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <h2 class="header center-align">Mapa del recorrido</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="map-container grey lighten-3 center-align valign-wrapper">
+                                <span class="grey-text">Mapa del recorrido Ch'utillos 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{>footercliente}}    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            M.Sidenav.init(elems);
+            var materialboxElems = document.querySelectorAll('.materialboxed');
+            M.Materialbox.init(materialboxElems);
+
+            var fabElems = document.querySelectorAll('.fixed-action-btn');
+            M.FloatingActionButton.init(fabElems);
+        });
+
+    </script>
+</body>
+</html>

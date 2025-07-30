@@ -1,0 +1,36 @@
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="text-center">{{title}}</h3>
+        </div>
+        <div class="card-body">
+            <div id="message" class="alert" style="display: none;"></div>
+            <form id="registerForm" method="post" action="/clientesesion/register">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Usuario:</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="names" class="form-label">Nombres:</label>
+                    <input type="names" class="form-control" id="names" name="names" required>
+                </div>
+                <div class="mb-3">
+                    <label for="lastNames" class="form-label">Apellidos:</label>
+                    <input type="lasNames" class="form-control" id="lastNames" name="lastNames" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Registrarse</button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="/auth/loginclient">¿Ya tienes cuenta? Inicia sesión</a>
+            </div>
+        </div>
+    </div>
+</div>

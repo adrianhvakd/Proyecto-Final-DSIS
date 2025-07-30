@@ -12,7 +12,7 @@
         {{/if}}
     </form>
 </div>
-
+<br>
 <div id="modal1" class="modal">
     <div class="modal-content">
         <form method="post" action="/cronograma">
@@ -92,7 +92,7 @@
                        data-descripcion="{{this.descripcion}}">
                         <i class="material-icons">create</i>
                     </a>
-                    <a class="btn" href="/cronograma/eliminar/{{this.id}}" onclick="return confirm('Seguro que deseas eliminar este cronograma?')">
+                    <a class="btn red" href="/cronograma/eliminar/{{this.id}}" onclick="return confirm('Seguro que deseas eliminar este cronograma?')">
                         <i class="material-icons">delete</i>
                     </a>
                 </td>

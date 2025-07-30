@@ -1,12 +1,16 @@
+{{>titulo}}
 {{>sidebar}}
-    <section class="content">
-      <div class="container">
-        <h1>{{title}}</h1>
-        <p>Bienvenido, {{user.username}}</p>
-        {{user.email}}
-        <form action="/auth/logout" method="get">
-            <button type="submit" class="btn w-100">Cerrar sesión</button>
-        </form>
-      </div>
-
-        </section>
+<section class="content">
+  <div class="container">
+    <h3>Bienvenido, {{user.username}}</h3>
+    {{user.email}}
+    <br>
+    <br>
+    <form action="/auth/logout" method="get">
+        <button type="submit" class="btn w-100">Cerrar sesión</button>
+    </form>
+  </div>
+  <script>
+  console.log('hola',document.cookie);
+</script>
+</section>

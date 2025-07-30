@@ -4,8 +4,8 @@
 
 <div class="container">
     <form method="get" action="">
-    <input type="text" name="buscar" placeholder="Buscar..." value="{{buscar}}" required/>
-    <button type="submit" class="btn">Buscar</button>
+        <input type="text" name="buscar" placeholder="Buscar..." value="{{buscar}}" required />
+        <button type="submit" class="btn">Buscar</button>
         {{#if buscar}}
         <a href="/users">
             <button type="button" class="btn">Limpiar</button>
@@ -15,37 +15,150 @@
 </div>
 <br>
 <div class="container">
-    <a href="/users/formusers" class="btn">Agregar nuevo usuario</a>
+    <a href="#modal1" class="btn modal-trigger" onclick="limpiarFormulario()">Agregar nuevo usuario</a>
 </div>
+
+<!-- Modal -->
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <form id="modalForm" method="post">
+            <input type="hidden" id="user_id" name="id">
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="username" name="username" type="text" required>
+                    <label for="username">Usuario</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="email" name="email" type="email" required>
+                    <label for="email">Correo Electrónico</label>
+                </div>
+            </div>
+             <div class="row">
+                <div class="input-field col s12">
+                    <input id="pw" name="password" type="text">
+                    <label id="lpw" for="pw">Contraseña</label>
+                </div>
+             </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="names" name="names" type="text" required>
+                    <label for="names">Nombres</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="lastNames" name="lastNames" type="text" required>
+                    <label for="lastNames">Apellidos</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <select id="role" name="role">
+                        <option value="Super Administrador">Super Administrador</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Moderador">Moderador</option>
+                    </select>
+                    <label for="role">Rol</label>
+                </div>
+                <div class="input-field col s6">
+                    <select id="isActive" name="isActive">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                    <label for="isActive">Activo?</label>
+                </div>
+            </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close btn red">Cancelar</a>
+        <button type="submit" class="btn">Confirmar</button>
+    </div>
+        </form>
+</div>
+
 <div class="container">
     <table>
-        <tr>
-            <th>Usuario</th>
-            <th>Correo Electronico</th>
-            <th>Nombres</th>
-            <th>Apellidos</th>
-            <th>Rol</th>
-            <th>Esta activo?</th>
-            <th>Acciones</th>
-        </tr>
-        
-        {{#each users.result}}
-        <tr>
-            <td>{{this.username}} </td>
-            <td>{{this.email}}</td>
-            <td>{{this.names}}</td>
-            <td>{{this.lastNames}}</td>
-            <td>{{this.role}}</td>
-            <td>{{#if this.isActive}}SI{{else}}NO{{/if}}</td>
-            <td>
-                <a href="/users/formedit/{{this.id}}" ><i class="material-icons">create</i></a>
-                <a href="/users/delete/{{this.id}}" onclick="return confirm('¿Estás seguro de borrar este cliente?')"><i class="material-icons">delete</i></a>
-            </td>
-        </tr>
-        {{/each}}
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Correo Electrónico</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Rol</th>
+                <th>Activo?</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each users.result}}
+            <tr>
+                <td>{{this.username}}</td>
+                <td>{{this.email}}</td>
+                <td>{{this.names}}</td>
+                <td>{{this.lastNames}}</td>
+                <td>{{this.role}}</td>
+                <td>{{#if this.isActive}}SI{{else}}NO{{/if}}</td>
+                <td>
+                    <a class="btn editar-user modal-trigger" href="#modal1"
+                        data-id="{{this.id}}"
+                        data-username="{{this.username}}"
+                        data-email="{{this.email}}"
+                        data-names="{{this.names}}"
+                        data-lastNames="{{this.lastNames}}"
+                        data-role="{{this.role}}"
+                        data-isActive="{{this.isActive}}">
+                        <i class="material-icons">create</i>
+                    </a>
+                    <a href="/users/delete/{{this.id}}" class="btn red" onclick="return confirm('¿Estás seguro de borrar este usuario?')">
+                        <i class="material-icons">delete</i>
+                    </a>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
     </table>
-
     {{>paginar}}
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        M.Modal.init(document.querySelectorAll('.modal'));
+        M.FormSelect.init(document.querySelectorAll('select'));
 
+        document.querySelectorAll('.editar-user').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const pwInput = document.getElementById('pw');
+                if (pwInput) {
+                  pwInput.removeAttribute('name');
+                }
+                document.getElementById('pw').type = 'hidden';
+                document.getElementById('lpw').style.display = 'none';
+                document.getElementById('user_id').value = this.dataset.id;
+                document.getElementById('username').value = this.dataset.username;
+                document.getElementById('email').value = this.dataset.email;
+                document.getElementById('names').value = this.dataset.names;
+                document.getElementById('lastNames').value = this.dataset.lastnames;
+                document.getElementById('role').value = this.dataset.role;
+                document.getElementById('isActive').value = this.dataset.isactive === 'true' ? 'true' : 'false';
+
+                M.updateTextFields();
+                M.FormSelect.init(document.querySelectorAll('select'));
+
+                const form = document.getElementById('modalForm');
+                form.action = `/users/edit/${this.dataset.id}`;
+            });
+        });
+
+        document.getElementById('modalForm').addEventListener('submit', function (e) {
+            const id = document.getElementById('user_id').value;
+            if (!id) {
+                this.action = '/users';
+            }
+        });
+    });
+
+    function limpiarFormulario() {
+        document.getElementById('modalForm').reset();
+        document.getElementById('user_id').value = '';
+        M.updateTextFields();
+        M.FormSelect.init(document.querySelectorAll('select'));
+    }
+</script>

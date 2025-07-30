@@ -29,5 +29,8 @@ export class AppController {
       };
   }
 
-  
+
+  @Get('contacto')
+  @Render('contacto.hbs')
+  rendercontacto(){}
 }

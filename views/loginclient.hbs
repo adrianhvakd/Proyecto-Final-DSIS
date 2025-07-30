@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="login-container">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">{{title}}</h3>
+            </div>
+            <div class="card-body">
+                <div id="message" class="alert" style="display: none;"></div>
+                <form id="loginForm" method="post" action="/auth/loginclient">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Usuario:</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña:</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+                </form>
+                <div class="text-center mt-3">
+                    <a href="/clientesesion/registerclient">¿No tienes cuenta? Regístrate</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,33 @@
+    <!-- Header -->
+    <div class="navbar-fixed">
+        <nav class="white">
+            <div class="nav-wrapper">
+                <a href="/" class="brand-logo black-text">Ch'utillos</a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger black-text"><i class="material-icons">menu</i></a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="/" class="black-text">Inicio</a></li>
+                    <li><a href="/puestos/ventas" class="black-text">Puestos</a></li>
+                    <li><a href="/galeria" class="black-text">Galería</a></li>
+                    <li><a href="/contacto" class="black-text">Contacto</a></li>
+                    {{#if hasClientSession}}
+                    {{else}}
+                    <li><a href="/auth/loginclient" class="btn white black-text waves-effect waves-light">Iniciar Sesión</a></li>
+                    <li><a href="/clientesesion/registerclient" class="btn black white-text waves-effect waves-light">Registrarse</a></li>
+                    {{/if}}
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Mobile Sidenav -->
+    <ul class="sidenav" id="mobile-demo">
+        <li><h4 class="center-align">Ch'utillos</h4></li>
+        <li><div class="divider"></div></li>
+        <li><a href="/"><i class="material-icons">home</i>Inicio</a></li>
+        <li><a href="/puestos/ventas"><i class="material-icons">schedule</i>Puestos</a></li>
+        <li><a href="/galeria"><i class="material-icons">photo_library</i>Galería</a></li>
+        <li><a href="/contacto"><i class="material-icons">contact_mail</i>Contacto</a></li>
+        <li><div class="divider"></div></li>
+        <li><a href="/loginclient" class="btn white black-text">Iniciar Sesión</a></li>
+        <li><a href="/registerclient" class="btn black white-text">Registrarse</a></li>
+    </ul>
